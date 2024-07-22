@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  post_build:
+    commands:
+      - chmod +x scripts/*
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
+
+cache:
+  paths:
+    - node_modules/**/* 

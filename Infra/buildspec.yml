@@ -1,0 +1,32 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/k2d2n3k4
+      - sudo yum install -y yum-utils
+      - sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+      - sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      - sudo yum install docker -y
+      - echo "docker had been insatll sucess" 
+
+  build:
+    commands:
+      - docker ps
+      - docker build -t basicweb .
+
+  post_build:
+    commands:
+      - docker tag basicweb public.ecr.aws/k2d2n3k4/basicweb:latest
+      - docker push public.ecr.aws/k2d2n3k4/basicweb:latest
+      - chmod +x scripts/*
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
+
+cache:
+  paths:
+    - node_modules/**/* 
